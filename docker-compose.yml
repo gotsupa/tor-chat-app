@@ -1,0 +1,14 @@
+services:
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: km-crm-chromadb
+    ports:
+      - '8000:8000'
+    volumes:      
+      - chroma-data:/chroma/chroma
+    environment:
+      - ANONYMIZED_TELEMETRY=FALSE
+    restart: unless-stopped
+
+volumes:
+  chroma-data:
