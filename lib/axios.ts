@@ -5,7 +5,7 @@ import axios from 'axios'
  * Pre-configured with base URL and JSON content type.
  */
 export const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000',
+  baseURL: process.env.NEXT_PUBLIC_API_URL!,
   headers: {
     'Content-Type': 'application/json',
   },

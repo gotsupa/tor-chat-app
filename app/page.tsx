@@ -1,63 +1,87 @@
-import Image from 'next/image'
+import { ArrowRightIcon, FileTextIcon, MessageCircleIcon } from 'lucide-react'
+import Link from 'next/link'
+
+import { ThemeSelect } from '@/components/shared/theme-select'
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          alt="Next.js logo"
-          className="dark:invert"
-          height={20}
-          priority
-          src="/next.svg"
-          width={100}
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="flex flex-1 flex-col">
+      {/* Top bar */}
+      <header className="flex items-center justify-between px-6 py-4">
+        <span className="text-sm font-semibold tracking-tight text-foreground">
+          TOR Chat
+        </span>
+        <ThemeSelect />
+      </header>
+
+      {/* Hero */}
+      <main className="flex flex-1 flex-col items-center justify-center px-4 pb-24">
+        <div className="mb-12 flex flex-col items-center gap-3 text-center">
+          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            TOR Chat App
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{' '}
-            <a
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            >
-              Templates
-            </a>{' '}
-            or the{' '}
-            <a
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            >
-              Learning
-            </a>{' '}
-            center.
+          <p className="max-w-md text-base text-muted-foreground">
+            ถามตอบจากเอกสาร PDF และสร้างเอกสาร TOR อัตโนมัติ
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            rel="noopener noreferrer"
-            target="_blank"
+
+        {/* Feature Cards */}
+        <div className="grid w-full max-w-2xl gap-4 sm:grid-cols-2">
+          {/* Chat Bot Card */}
+          <Link
+            aria-label="ไปหน้า Chat Bot — ถาม-ตอบ AI จากเอกสาร"
+            className="group flex flex-col gap-4 rounded-xl border border-border bg-card p-5 transition-colors duration-200 hover:border-foreground/15 hover:bg-accent/50"
+            href="/chat"
           >
-            <Image
-              alt="Vercel logomark"
-              className="dark:invert"
-              height={16}
-              src="/vercel.svg"
-              width={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            rel="noopener noreferrer"
-            target="_blank"
+            <div className="flex items-center justify-between">
+              <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10">
+                <MessageCircleIcon className="size-5 text-primary" />
+              </div>
+              <ArrowRightIcon className="size-4 text-muted-foreground transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-foreground" />
+            </div>
+            <div>
+              <h2 className="text-base font-semibold">Chat Bot</h2>
+              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                อัปโหลด PDF แล้วถามคำถามเกี่ยวกับเนื้อหาในเอกสาร
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              <span className="rounded-md bg-secondary px-2 py-0.5 text-xs text-muted-foreground">
+                PDF Upload
+              </span>
+              <span className="rounded-md bg-secondary px-2 py-0.5 text-xs text-muted-foreground">
+                AI Q&amp;A
+              </span>
+            </div>
+          </Link>
+
+          {/* TOR Generator Card */}
+          <Link
+            aria-label="ไปหน้า TOR Generator — สร้างเอกสาร TOR อัตโนมัติ"
+            className="group flex flex-col gap-4 rounded-xl border border-border bg-card p-5 transition-colors duration-200 hover:border-foreground/15 hover:bg-accent/50"
+            href="/tor"
           >
-            Documentation
-          </a>
+            <div className="flex items-center justify-between">
+              <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10">
+                <FileTextIcon className="size-5 text-primary" />
+              </div>
+              <ArrowRightIcon className="size-4 text-muted-foreground transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-foreground" />
+            </div>
+            <div>
+              <h2 className="text-base font-semibold">TOR Generator</h2>
+              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                อัปโหลด PDF → AI ดึงข้อมูล → ตรวจสอบ → ดาวน์โหลด DOCX
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              <span className="rounded-md bg-secondary px-2 py-0.5 text-xs text-muted-foreground">
+                AI Extract
+              </span>
+              <span className="rounded-md bg-secondary px-2 py-0.5 text-xs text-muted-foreground">
+                7 ประเภท
+              </span>
+            </div>
+          </Link>
         </div>
       </main>
     </div>
