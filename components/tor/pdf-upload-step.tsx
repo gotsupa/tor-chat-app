@@ -62,7 +62,7 @@ export function PdfUploadStep({
         <Select
           disabled={isExtracting}
           onValueChange={(v) => onTorTypeChange(v as TorType)}
-          value={torType || undefined}
+          value={torType}
         >
           <SelectTrigger className="w-full">
             <SelectValue placeholder="เลือกประเภท TOR">
@@ -78,6 +78,7 @@ export function PdfUploadStep({
           <SelectContent className="p-1">
             {TOR_TYPES.map((type) => (
               <SelectItem
+                disabled={type.disabled}
                 key={type.value}
                 label={type.label}
                 value={type.value}

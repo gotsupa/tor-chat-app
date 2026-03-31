@@ -9,12 +9,12 @@ import { toast } from 'sonner'
 import type { TorFields, TorType } from '@/lib/types'
 
 import { PageHeader } from '@/components/shared/page-header'
-import { PdfPreview } from '@/components/tor/pdf-preview'
+import { PdfPreview } from '@/components/shared/pdf-preview'
 import { PdfUploadStep } from '@/components/tor/pdf-upload-step'
 import { TorDownload } from '@/components/tor/tor-download'
 import { TorForm } from '@/components/tor/tor-form'
 import { Button } from '@/components/ui/button'
-import { apiClient } from '@/lib/axios'
+import EQUIPMENT_MOCK from '@/lib/mock/equipment-procurement.json'
 import { torFieldsSchema } from '@/lib/types'
 
 type Step = 'download' | 'form' | 'upload'
@@ -29,10 +29,13 @@ const DEFAULT_VALUES: TorFields = {
   scope: '',
 }
 
+/** Pre-filled mock for equipment_procurement — remove for production */
+const DEV_MOCK_VALUES: TorFields = EQUIPMENT_MOCK as TorFields
+
 export function TorGenerator() {
-  const [step, setStep] = useState<Step>('upload')
+  const [step, setStep] = useState<Step>('form')
   const [file, setFile] = useState<File | null>(null)
-  const [torType, setTorType] = useState<'' | TorType>('')
+  const [torType, setTorType] = useState<'' | TorType>('equipment_procurement')
   const [confidence, setConfidence] = useState(0)
   const [isExtracting, setIsExtracting] = useState(false)
   const [isGenerating, setIsGenerating] = useState(false)
@@ -40,7 +43,7 @@ export function TorGenerator() {
   const [downloadUrl, setDownloadUrl] = useState<null | string>(null)
 
   const form = useForm<TorFields>({
-    defaultValues: DEFAULT_VALUES,
+    defaultValues: DEV_MOCK_VALUES,
     resolver: zodResolver(torFieldsSchema),
   })
 
@@ -54,9 +57,13 @@ export function TorGenerator() {
       formData.append('file', file)
       formData.append('tor_type', torType)
 
-      const { data } = await apiClient.post('/api/tor/extract', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+      const res = await fetch('/api/tor/extract', {
+        body: formData,
+        method: 'POST',
       })
+
+      if (!res.ok) throw new Error('Extract failed')
+      const data = await res.json()
 
       const extractedFields = data.fields || DEFAULT_VALUES
       form.reset(extractedFields)
@@ -80,17 +87,17 @@ export function TorGenerator() {
       setDownloadSuccess(false)
 
       try {
-        const { data } = await apiClient.post(
-          '/api/tor/generate',
-          { fields, torType },
-          { responseType: 'blob' }
-        )
+        const res = await fetch('/api/tor/generate', {
+          body: JSON.stringify({ fields, torType }),
+          headers: { 'Content-Type': 'application/json' },
+          method: 'POST',
+        })
+
+        if (!res.ok) throw new Error('Generate failed')
+        const data = await res.blob()
 
         // Create download URL from blob
-        const blob = new Blob([data], {
-          type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        })
-        const url = URL.createObjectURL(blob)
+        const url = URL.createObjectURL(data)
         setDownloadUrl(url)
         setDownloadSuccess(true)
         toast.success('สร้างเอกสาร TOR สำเร็จ')
@@ -140,7 +147,7 @@ export function TorGenerator() {
   }, [downloadUrl, form])
 
   return (
-    <div className="flex flex-1 flex-col">
+    <div className="flex h-full flex-col">
       {/* Header */}
       <PageHeader
         description="อัปโหลด PDF → AI ดึงข้อมูล → สร้างเอกสาร TOR"
@@ -157,12 +164,12 @@ export function TorGenerator() {
       {/* Content */}
       <div className="flex-1 overflow-y-auto custom-scrollbar">
         <div
-          className={`mx-auto px-4 py-8 ${
+          className={`mx-auto px-4 py-5 md:py-8 ${
             step === 'form' ? 'max-w-6xl' : 'max-w-2xl'
           }`}
         >
           {/* Step Indicator */}
-          <div className="mb-8 flex items-center gap-2">
+          <div className="mb-5 flex items-center gap-2 md:mb-8">
             {(['upload', 'form', 'download'] as Step[]).map((s, i) => (
               <div className="flex items-center gap-2" key={s}>
                 <div
@@ -205,8 +212,8 @@ export function TorGenerator() {
                 <div className="flex flex-col gap-6 lg:flex-row">
                   {/* PDF Preview — sticky left panel */}
                   {file && (
-                    <div className="lg:sticky lg:top-0 lg:w-1/2 lg:self-start">
-                      <div className="h-[50vh] lg:h-[calc(100vh-12rem)]">
+                    <div className="sticky top-0 lg:w-1/2 lg:self-start">
+                      <div className="h-[40vh] lg:h-[calc(100vh-12rem)]">
                         <PdfPreview file={file} />
                       </div>
                     </div>
@@ -218,7 +225,7 @@ export function TorGenerator() {
                       confidence={confidence}
                       torType={torType as TorType}
                     />
-                    <div className="mt-8 flex gap-3">
+                    <div className="mt-6 flex flex-wrap gap-3 md:mt-8">
                       <Button
                         className="gap-2"
                         onClick={() => setStep('upload')}
