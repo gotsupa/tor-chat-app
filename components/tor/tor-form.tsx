@@ -1,11 +1,12 @@
 'use client'
 
-import { SparklesIcon } from 'lucide-react'
-import { Controller, useFormContext } from 'react-hook-form'
+import { PlusIcon, SparklesIcon, TrashIcon } from 'lucide-react'
+import { Controller, useFormContext, useWatch } from 'react-hook-form'
 
 import type { TorFields, TorType } from '@/lib/types'
 
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
@@ -16,52 +17,74 @@ interface TorFormProps {
   torType: TorType
 }
 
-const FIELD_CONFIG = [
+// Fields shown for all TOR types
+const COMMON_FIELDS = [
   {
     key: 'projectName' as const,
     label: 'ชื่อโครงการ',
     required: true,
     type: 'input',
   },
-  {
-    key: 'objective' as const,
-    label: 'วัตถุประสงค์',
-    type: 'textarea',
-  },
-  {
-    key: 'scope' as const,
-    label: 'ขอบเขตงาน',
-    type: 'textarea',
-  },
-  {
-    key: 'budget' as const,
-    label: 'งบประมาณ',
-    type: 'input',
-  },
-  {
-    key: 'duration' as const,
-    label: 'ระยะเวลาดำเนินการ',
-    type: 'input',
-  },
+  { key: 'objective' as const, label: 'วัตถุประสงค์', type: 'textarea' },
+  { key: 'scope' as const, label: 'ขอบเขตงาน', type: 'textarea' },
+  { key: 'budget' as const, label: 'งบประมาณ', type: 'input' },
+  { key: 'duration' as const, label: 'ระยะเวลาดำเนินการ', type: 'input' },
   {
     key: 'qualifications' as const,
     label: 'คุณสมบัติผู้เสนอราคา',
     type: 'textarea',
   },
+  { key: 'conditions' as const, label: 'เงื่อนไขอื่น ๆ', type: 'textarea' },
+]
+
+// Extra fields specific to equipment_procurement
+const EQUIPMENT_FIELDS = [
+  { key: 'quantity' as const, label: 'จำนวน', type: 'input' },
+  { key: 'unit' as const, label: 'หน่วย', type: 'input' },
+  { key: 'background' as const, label: 'ความเป็นมา', type: 'textarea' },
+  { key: 'brands' as const, label: 'ยี่ห้อ / ผู้ผลิตที่กำหนด', type: 'input' },
   {
-    key: 'conditions' as const,
-    label: 'เงื่อนไขอื่น ๆ',
-    type: 'textarea',
+    key: 'minProjectValue' as const,
+    label: 'มูลค่าผลงานขั้นต่ำ (บาท)',
+    type: 'input',
   },
+  { key: 'cpu' as const, label: 'ประมวลผล (CPU)', type: 'input' },
+  { key: 'ram' as const, label: 'หน่วยความจำ (RAM)', type: 'input' },
+  { key: 'storage' as const, label: 'พื้นที่จัดเก็บ (Storage)', type: 'input' },
+  { key: 'os' as const, label: 'ระบบปฏิบัติการ (OS)', type: 'input' },
+  { key: 'monitor' as const, label: 'มอนิเตอร์', type: 'input' },
+  {
+    key: 'warrantyYears' as const,
+    label: 'ระยะเวลารับประกัน (ปี)',
+    type: 'input',
+  },
+  { key: 'middlePrice' as const, label: 'ราคากลาง (บาท)', type: 'input' },
+  { key: 'penaltyRate' as const, label: 'อัตราค่าปรับ (%)', type: 'input' },
+  { key: 'penaltyMin' as const, label: 'ค่าปรับขั้นต่ำ (บาท)', type: 'input' },
+  { key: 'bondPercent' as const, label: 'หลักประกันสัญญา (%)', type: 'input' },
 ]
 
 export function TorForm({ confidence, torType }: TorFormProps) {
   const {
     control,
     formState: { errors },
+    setValue,
   } = useFormContext<TorFields>()
 
   const torLabel = TOR_TYPES.find((t) => t.value === torType)?.label
+  const isEquipment = torType === 'equipment_procurement'
+
+  // Manage objectives as string[] via setValue
+  const objectives = useWatch({ control, name: 'objectives' }) ?? []
+  const setObjectives = (next: string[]) => setValue('objectives', next)
+  const addObjective = () => setObjectives([...objectives, ''])
+  const removeObjective = (i: number) =>
+    setObjectives(objectives.filter((_, idx) => idx !== i))
+  const updateObjective = (i: number, val: string) => {
+    const next = [...objectives]
+    next[i] = val
+    setObjectives(next)
+  }
 
   return (
     <div className="space-y-6">
@@ -98,9 +121,9 @@ export function TorForm({ confidence, torType }: TorFormProps) {
         </Badge>
       </div>
 
-      {/* Fields */}
+      {/* Common Fields */}
       <div className="space-y-4">
-        {FIELD_CONFIG.map((field) => (
+        {COMMON_FIELDS.map((field) => (
           <Controller
             control={control}
             key={field.key}
@@ -114,13 +137,17 @@ export function TorForm({ confidence, torType }: TorFormProps) {
                   )}
                 </Label>
                 {field.type === 'input' ? (
-                  <Input id={field.key} onChange={onChange} value={value} />
+                  <Input
+                    id={field.key}
+                    onChange={onChange}
+                    value={value ?? ''}
+                  />
                 ) : (
                   <Textarea
                     className="min-h-[100px]"
                     id={field.key}
                     onChange={onChange}
-                    value={value}
+                    value={value ?? ''}
                   />
                 )}
                 {errors[field.key] && (
@@ -133,6 +160,81 @@ export function TorForm({ confidence, torType }: TorFormProps) {
           />
         ))}
       </div>
+
+      {/* Equipment Procurement Fields */}
+      {isEquipment && (
+        <div className="space-y-4 rounded-xl border border-border/50 bg-card/50 p-4">
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            รายละเอียดครุภัณฑ์
+          </p>
+
+          {EQUIPMENT_FIELDS.map((field) => (
+            <Controller
+              control={control}
+              key={field.key}
+              name={field.key}
+              render={({ field: { onChange, value } }) => (
+                <div className="space-y-2">
+                  <Label htmlFor={field.key}>{field.label}</Label>
+                  {field.type === 'input' ? (
+                    <Input
+                      id={field.key}
+                      onChange={onChange}
+                      value={value ?? ''}
+                    />
+                  ) : (
+                    <Textarea
+                      className="min-h-[80px]"
+                      id={field.key}
+                      onChange={onChange}
+                      value={value ?? ''}
+                    />
+                  )}
+                </div>
+              )}
+            />
+          ))}
+
+          {/* Objectives — dynamic list */}
+          <div className="space-y-2">
+            <Label>วัตถุประสงค์ (รายการ)</Label>
+            <div className="space-y-2">
+              {objectives.map((obj, index) => (
+                <div className="flex gap-2" key={index}>
+                  <span className="mt-2.5 text-xs text-muted-foreground w-6 shrink-0">
+                    {index + 1}.
+                  </span>
+                  <Input
+                    className="flex-1"
+                    id={`objectives-${index}`}
+                    onChange={(e) => updateObjective(index, e.target.value)}
+                    value={obj}
+                  />
+                  <Button
+                    className="size-9 shrink-0"
+                    onClick={() => removeObjective(index)}
+                    size="icon"
+                    type="button"
+                    variant="ghost"
+                  >
+                    <TrashIcon className="size-3.5 text-destructive" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+            <Button
+              className="w-full"
+              onClick={addObjective}
+              size="sm"
+              type="button"
+              variant="outline"
+            >
+              <PlusIcon className="size-3.5 mr-1" />
+              เพิ่มวัตถุประสงค์
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

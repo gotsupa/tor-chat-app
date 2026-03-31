@@ -39,6 +39,7 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   initialScale: 1,
+  viewportFit: 'cover',
   width: 'device-width',
 }
 
@@ -53,7 +54,10 @@ export default function RootLayout({
       lang="th"
       suppressHydrationWarning
     >
-      <body className="min-h-dvh flex flex-col" suppressHydrationWarning>
+      <body
+        className="h-dvh flex flex-col overflow-hidden"
+        suppressHydrationWarning
+      >
         <ThemeProvider>
           <QueryProvider>
             {children}

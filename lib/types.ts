@@ -18,23 +18,43 @@ export interface ChatSession {
 import { z } from 'zod'
 
 export const TOR_TYPES = [
-  { label: 'จัดซื้อวัสดุ', value: 'material_procurement' },
-  { label: 'จ้างเหมาบริการ', value: 'service_contract' },
-  { label: 'จ้างที่ปรึกษา', value: 'consulting' },
-  { label: 'จัดซื้อครุภัณฑ์', value: 'equipment_procurement' },
-  { label: 'งานก่อสร้าง', value: 'construction' },
-  { label: 'จ้างออกแบบ', value: 'design' },
-  { label: 'เช่าใช้บริการ', value: 'rental_service' },
+  { disabled: true, label: 'จ้างทั่วไป', value: 'general_service' },
+  { disabled: true, label: 'จ้างก่อสร้าง', value: 'construction' },
+  { disabled: true, label: 'จ้างที่ปรึกษา', value: 'consulting' },
+  { disabled: true, label: 'จัดซื้อทั่วไป', value: 'general_procurement' },
+  {
+    disabled: false,
+    label: 'จัดซื้อคอมพิวเตอร์',
+    value: 'equipment_procurement',
+  },
+  { disabled: true, label: 'จ้างออกแบบ', value: 'design' },
+  { disabled: true, label: 'จ้างควบคุมงาน', value: 'supervision' },
 ] as const
 
 export const torFieldsSchema = z.object({
+  background: z.string().optional(),
+  bondPercent: z.string().optional(),
+  brands: z.string().optional(),
   budget: z.string(),
   conditions: z.string(),
+  cpu: z.string().optional(),
   duration: z.string(),
+  middlePrice: z.string().optional(),
+  minProjectValue: z.string().optional(),
+  monitor: z.string().optional(),
   objective: z.string(),
+  objectives: z.array(z.string()).optional(),
+  os: z.string().optional(),
+  penaltyMin: z.string().optional(),
+  penaltyRate: z.string().optional(),
   projectName: z.string().min(1, 'กรุณาระบุชื่อโครงการ'),
   qualifications: z.string(),
+  quantity: z.string().optional(),
+  ram: z.string().optional(),
   scope: z.string(),
+  storage: z.string().optional(),
+  unit: z.string().optional(),
+  warrantyYears: z.string().optional(),
 })
 
 export interface TorExtractResponse {
