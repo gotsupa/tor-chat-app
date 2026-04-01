@@ -27,7 +27,12 @@ const COMMON_FIELDS = [
   },
   { key: 'objective' as const, label: 'วัตถุประสงค์', type: 'textarea' },
   { key: 'scope' as const, label: 'ขอบเขตงาน', type: 'textarea' },
-  { key: 'budget' as const, label: 'งบประมาณ', type: 'input' },
+  {
+    inputType: 'number',
+    key: 'budget' as const,
+    label: 'งบประมาณ (บาท)',
+    type: 'input',
+  },
   { key: 'duration' as const, label: 'ระยะเวลาดำเนินการ', type: 'input' },
   {
     key: 'qualifications' as const,
@@ -39,11 +44,17 @@ const COMMON_FIELDS = [
 
 // Extra fields specific to equipment_procurement
 const EQUIPMENT_FIELDS = [
-  { key: 'quantity' as const, label: 'จำนวน', type: 'input' },
+  {
+    inputType: 'number',
+    key: 'quantity' as const,
+    label: 'จำนวน',
+    type: 'input',
+  },
   { key: 'unit' as const, label: 'หน่วย', type: 'input' },
   { key: 'background' as const, label: 'ความเป็นมา', type: 'textarea' },
   { key: 'brands' as const, label: 'ยี่ห้อ / ผู้ผลิตที่กำหนด', type: 'input' },
   {
+    inputType: 'number',
     key: 'minProjectValue' as const,
     label: 'มูลค่าผลงานขั้นต่ำ (บาท)',
     type: 'input',
@@ -54,14 +65,35 @@ const EQUIPMENT_FIELDS = [
   { key: 'os' as const, label: 'ระบบปฏิบัติการ (OS)', type: 'input' },
   { key: 'monitor' as const, label: 'มอนิเตอร์', type: 'input' },
   {
+    inputType: 'number',
     key: 'warrantyYears' as const,
     label: 'ระยะเวลารับประกัน (ปี)',
     type: 'input',
   },
-  { key: 'middlePrice' as const, label: 'ราคากลาง (บาท)', type: 'input' },
-  { key: 'penaltyRate' as const, label: 'อัตราค่าปรับ (%)', type: 'input' },
-  { key: 'penaltyMin' as const, label: 'ค่าปรับขั้นต่ำ (บาท)', type: 'input' },
-  { key: 'bondPercent' as const, label: 'หลักประกันสัญญา (%)', type: 'input' },
+  {
+    inputType: 'number',
+    key: 'middlePrice' as const,
+    label: 'ราคากลาง (บาท)',
+    type: 'input',
+  },
+  {
+    inputType: 'number',
+    key: 'penaltyRate' as const,
+    label: 'อัตราค่าปรับ (%)',
+    type: 'input',
+  },
+  {
+    inputType: 'number',
+    key: 'penaltyMin' as const,
+    label: 'ค่าปรับขั้นต่ำ (บาท)',
+    type: 'input',
+  },
+  {
+    inputType: 'number',
+    key: 'bondPercent' as const,
+    label: 'หลักประกันสัญญา (%)',
+    type: 'input',
+  },
 ]
 
 export function TorForm({ confidence, torType }: TorFormProps) {
@@ -139,7 +171,10 @@ export function TorForm({ confidence, torType }: TorFormProps) {
                 {field.type === 'input' ? (
                   <Input
                     id={field.key}
+                    min={field.inputType === 'number' ? 0 : undefined}
                     onChange={onChange}
+                    step={field.inputType === 'number' ? 'any' : undefined}
+                    type={field.inputType ?? 'text'}
                     value={value ?? ''}
                   />
                 ) : (
@@ -179,7 +214,10 @@ export function TorForm({ confidence, torType }: TorFormProps) {
                   {field.type === 'input' ? (
                     <Input
                       id={field.key}
+                      min={field.inputType === 'number' ? 0 : undefined}
                       onChange={onChange}
+                      step={field.inputType === 'number' ? 'any' : undefined}
+                      type={field.inputType ?? 'text'}
                       value={value ?? ''}
                     />
                   ) : (

@@ -30,12 +30,12 @@ const DEFAULT_VALUES: TorFields = {
 }
 
 /** Pre-filled mock for equipment_procurement — remove for production */
-const DEV_MOCK_VALUES: TorFields = EQUIPMENT_MOCK as TorFields
+const DEV_MOCK_VALUES: TorFields = EQUIPMENT_MOCK as unknown as TorFields
 
 export function TorGenerator() {
-  const [step, setStep] = useState<Step>('form')
+  const [step, setStep] = useState<Step>('upload')
   const [file, setFile] = useState<File | null>(null)
-  const [torType, setTorType] = useState<'' | TorType>('equipment_procurement')
+  const [torType, setTorType] = useState<'' | TorType>('')
   const [confidence, setConfidence] = useState(0)
   const [isExtracting, setIsExtracting] = useState(false)
   const [isGenerating, setIsGenerating] = useState(false)
