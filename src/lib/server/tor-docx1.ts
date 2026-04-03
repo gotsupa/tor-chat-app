@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { AlignmentType, Document, Packer, Paragraph, TextRun } from 'docx'
 
 // ─── Types ───────────────────────────────────────────────────
@@ -8,7 +9,6 @@ type Fields = Record<string, unknown>
 
 export async function createTorDocument(
   fields: Fields,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _torType?: string
 ): Promise<Buffer> {
   const g = (k: string) => get(fields, k)
@@ -83,16 +83,9 @@ export async function createTorDocument(
     ...createQualifications(fields),
     spacer(80),
 
-     //── 4. Specifications ──
+    //── 4. Specifications ──
     sectionHeading('๔', 'คุณลักษณะเฉพาะ'),
-    thPara(
-      [
-        thText(
-          'เอกสารแนบ ๑'
-        ),
-      ],
-      { left: 720, spaceAfter: 80 }
-    ),
+    thPara([thText('เอกสารแนบ ๑')], { left: 720, spaceAfter: 80 }),
     // ── 4. Specifications ──
     // sectionHeading('๔', 'คุณลักษณะเฉพาะ'),
     // thPara(

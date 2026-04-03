@@ -1,16 +1,23 @@
 'use client'
 
-import { PlusIcon, SparklesIcon, TrashIcon } from 'lucide-react'
+import { SparklesIcon } from 'lucide-react'
 import { Controller, useFormContext, useWatch } from 'react-hook-form'
 
 import type { TorFields, TorType } from '@/lib/types'
 
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { TOR_TYPES } from '@/lib/types'
+
+interface FieldConfig {
+  inputType?: string
+  key: keyof TorFields
+  label: string
+  required?: boolean
+  type: 'input' | 'textarea'
+}
 
 interface TorFormProps {
   confidence: number
@@ -18,7 +25,7 @@ interface TorFormProps {
 }
 
 // Fields shown for all TOR types
-const COMMON_FIELDS = [
+const COMMON_FIELDS: FieldConfig[] = [
   {
     key: 'projectName' as const,
     label: 'ชื่อโครงการ',
@@ -36,7 +43,7 @@ const COMMON_FIELDS = [
   //   type: 'input',
   // },
   { key: 'duration' as const, label: 'ระยะเวลาดำเนินการ', type: 'input' },
-  { key: 'penaltyRate' as const, label: 'อัตราค่าปรับ', type: 'textarea' }
+  { key: 'penaltyRate' as const, label: 'อัตราค่าปรับ', type: 'textarea' },
   // {
   //   key: 'qualifications' as const,
   //   label: 'คุณสมบัติผู้เสนอราคา',
@@ -46,72 +53,71 @@ const COMMON_FIELDS = [
 ]
 
 // Extra fields specific to equipment_procurement
-const EQUIPMENT_FIELDS = [
-  {
-    inputType: 'number',
-    key: 'quantity' as const,
-    label: 'จำนวน',
-    type: 'input',
-  },
-  { key: 'unit' as const, label: 'หน่วย', type: 'input' },
-  { key: 'background' as const, label: 'ความเป็นมา', type: 'textarea' },
-  { key: 'objectives' as const, label: 'วัตถุประสงค์', type: 'textarea' },
-  { key: 'brands' as const, label: 'ยี่ห้อ / ผู้ผลิตที่กำหนด', type: 'input' },
-  {
-    inputType: 'number',
-    key: 'minProjectValue' as const,
-    label: 'มูลค่าผลงานขั้นต่ำ (บาท)',
-    type: 'input',
-  },
-  { key: 'cpu' as const, label: 'ประมวลผล (CPU)', type: 'input' },
-  { key: 'ram' as const, label: 'หน่วยความจำ (RAM)', type: 'input' },
-  { key: 'storage' as const, label: 'พื้นที่จัดเก็บ (Storage)', type: 'input' },
-  { key: 'os' as const, label: 'ระบบปฏิบัติการ (OS)', type: 'input' },
-  { key: 'monitor' as const, label: 'มอนิเตอร์', type: 'input' },
-  {
-    inputType: 'number',
-    key: 'warrantyYears' as const,
-    label: 'ระยะเวลารับประกัน (ปี)',
-    type: 'input',
-  },
-  {
-    inputType: 'number',
-    key: 'middlePrice' as const,
-    label: 'ราคากลาง (บาท)',
-    type: 'input',
-  },
-  {
-    inputType: 'number',
-    key: 'penaltyRate' as const,
-    label: 'อัตราค่าปรับ (%)',
-    type: 'input',
-  },
-  {
-    inputType: 'number',
-    key: 'penaltyMin' as const,
-    label: 'ค่าปรับขั้นต่ำ (บาท)',
-    type: 'input',
-  },
-  {
-    inputType: 'number',
-    key: 'bondPercent' as const,
-    label: 'หลักประกันสัญญา (%)',
-    type: 'input',
-  },
-]
+// const EQUIPMENT_FIELDS: FieldConfig[] = [
+//   {
+//     inputType: 'number',
+//     key: 'quantity' as const,
+//     label: 'จำนวน',
+//     type: 'input',
+//   },
+//   { key: 'unit' as const, label: 'หน่วย', type: 'input' },
+//   { key: 'background' as const, label: 'ความเป็นมา', type: 'textarea' },
+//   { key: 'objectives' as const, label: 'วัตถุประสงค์', type: 'textarea' },
+//   { key: 'brands' as const, label: 'ยี่ห้อ / ผู้ผลิตที่กำหนด', type: 'input' },
+//   {
+//     inputType: 'number',
+//     key: 'minProjectValue' as const,
+//     label: 'มูลค่าผลงานขั้นต่ำ (บาท)',
+//     type: 'input',
+//   },
+//   { key: 'cpu' as const, label: 'ประมวลผล (CPU)', type: 'input' },
+//   { key: 'ram' as const, label: 'หน่วยความจำ (RAM)', type: 'input' },
+//   { key: 'storage' as const, label: 'พื้นที่จัดเก็บ (Storage)', type: 'input' },
+//   { key: 'os' as const, label: 'ระบบปฏิบัติการ (OS)', type: 'input' },
+//   { key: 'monitor' as const, label: 'มอนิเตอร์', type: 'input' },
+//   {
+//     inputType: 'number',
+//     key: 'warrantyYears' as const,
+//     label: 'ระยะเวลารับประกัน (ปี)',
+//     type: 'input',
+//   },
+//   {
+//     inputType: 'number',
+//     key: 'middlePrice' as const,
+//     label: 'ราคากลาง (บาท)',
+//     type: 'input',
+//   },
+//   {
+//     inputType: 'number',
+//     key: 'penaltyRate' as const,
+//     label: 'อัตราค่าปรับ (%)',
+//     type: 'input',
+//   },
+//   {
+//     inputType: 'number',
+//     key: 'penaltyMin' as const,
+//     label: 'ค่าปรับขั้นต่ำ (บาท)',
+//     type: 'input',
+//   },
+//   {
+//     inputType: 'number',
+//     key: 'bondPercent' as const,
+//     label: 'หลักประกันสัญญา (%)',
+//     type: 'input',
+//   },
+// ]
 
 export function TorForm({ confidence, torType }: TorFormProps) {
   const {
     control,
     formState: { errors },
-    setValue,
   } = useFormContext<TorFields>()
 
   const torLabel = TOR_TYPES.find((t) => t.value === torType)?.label
-  const isEquipment = torType === 'equipment_procurement'
+  // const isEquipment = torType === 'equipment_procurement'
 
   // Manage objectives as string[] via setValue
-  const objectives = useWatch({ control, name: 'objectives' }) ?? []
+  // const objectives = useWatch({ control, name: 'objectives' }) ?? []
   // const setObjectives = (next: string[]) => setValue('objectives', next)
   // const addObjective = () => setObjectives([...objectives, ''])
   // const removeObjective = (i: number) =>

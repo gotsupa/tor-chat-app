@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { AlignmentType, Document, Packer, Paragraph, TextRun } from 'docx'
 
 // ─── Types ───────────────────────────────────────────────────
@@ -48,26 +49,19 @@ export async function createTorDocument(
     // 1.2
     thPara([thText('๑.๒ ความเป็นมา ')], { left: 720, spaceAfter: 0 }),
     bodyPara(
-      [
-        thText(val(background, 30), {  bold: false, color: '800080'  }),
-      ],
+      [thText(val(background, 30), { bold: false, color: '800080' })],
       0
     ),
 
     // 1.3
     thPara([thText('๑.๓ วัตถุประสงค์ ')], { left: 720, spaceAfter: 0 }),
-    bodyPara(
-      [
-        thText(val(objective, 30), {  bold: false, color: '800080'  }),
-      ],
-      0
-    ),
+    bodyPara([thText(val(objective, 30), { bold: false, color: '800080' })], 0),
 
     // 1.4
     thPara(
       [
         thText('๑.๔ วงเงินงบประมาณ/วงเงินที่ได้รับจัดสรร '),
-        thText(val(budget, 30), {  bold: false, color: '800080'  }),
+        thText(val(budget, 30), { bold: false, color: '800080' }),
       ],
       { left: 720, spaceAfter: 80 }
     ),
@@ -82,11 +76,14 @@ export async function createTorDocument(
     spacer(80),
 
     // ── Section 3: รายละเอียดคุณลักษณะเฉพาะ ──
-    sectionHeading('๓', 'รายละเอียดคุณลักษณะเฉพาะของพัสดุที่จะดำเนินการจัดซื้อ และเอกสารแนบท้ายอื่น ๆ'),
-    thPara(
-      [thText('เอกสารแนบ ๑ TOR DP๘-๔๖๓๔-WGZ')],
-      { left: 720, spaceAfter: 80 }
+    sectionHeading(
+      '๓',
+      'รายละเอียดคุณลักษณะเฉพาะของพัสดุที่จะดำเนินการจัดซื้อ และเอกสารแนบท้ายอื่น ๆ'
     ),
+    thPara([thText('เอกสารแนบ ๑ TOR DP๘-๔๖๓๔-WGZ')], {
+      left: 720,
+      spaceAfter: 80,
+    }),
 
     spacer(80),
 
@@ -95,7 +92,7 @@ export async function createTorDocument(
     thPara(
       [
         thText('ระยะเวลาส่งมอบ  '),
-        thText(val(duration, 30), {  bold: false, color: '800080'  }),
+        thText(val(duration, 30), { bold: false, color: '800080' }),
       ],
       { left: 720, spaceAfter: 80 }
     ),
@@ -133,7 +130,7 @@ export async function createTorDocument(
     bodyPara(
       [
         thText('อัตราค่าปรับกำหนดให้คิดในอัตราร้อยละ '),
-        thText(val(penaltyRate, 30), {  bold: false, color: '800080' }),
+        thText(val(penaltyRate, 30), { bold: false, color: '800080' }),
       ],
       0
     ),
@@ -280,14 +277,22 @@ function createQualifications(): Paragraph[] {
 
   paragraphs.push(
     thPara(
-      [thText('๒.๑๑  '), thText('ผู้ยื่นข้อเสนอต้องลงทะเบียนที่มีข้อมูลถูกต้องครบถ้วนในระบบจัดซื้อจัดจ้างภาครัฐด้วยอิเล็กทรอนิกส์ (Electronic Government Procurement : e-GP) ของกรมบัญชีกลาง')],
+      [
+        thText('๒.๑๑  '),
+        thText(
+          'ผู้ยื่นข้อเสนอต้องลงทะเบียนที่มีข้อมูลถูกต้องครบถ้วนในระบบจัดซื้อจัดจ้างภาครัฐด้วยอิเล็กทรอนิกส์ (Electronic Government Procurement : e-GP) ของกรมบัญชีกลาง'
+        ),
+      ],
       { left: 720, spaceAfter: 80 }
     )
   )
 
   paragraphs.push(
     thPara(
-      [thText('๒.๑๒  '), thText('ผู้ยื่นข้อเสนอต้องมีมูลค่าสุทธิของกิจการ ดังนี้')],
+      [
+        thText('๒.๑๒  '),
+        thText('ผู้ยื่นข้อเสนอต้องมีมูลค่าสุทธิของกิจการ ดังนี้'),
+      ],
       { left: 720, spaceAfter: 40 }
     )
   )
@@ -321,9 +326,9 @@ function get(fields: Fields, key: string): string {
 
 function sectionHeading(num: number | string, title: string): Paragraph {
   return thPara([thText(`${num}.  ${title}`, { bold: true })], {
+    left: 720,
     spaceAfter: 80,
     spaceBefore: 80,
-    left: 720,
   })
 }
 
