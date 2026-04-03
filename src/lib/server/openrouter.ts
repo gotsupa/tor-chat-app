@@ -66,9 +66,11 @@ export async function extractTorFields(
 จากเนื้อหา PDF ด้านล่าง ให้ดึงข้อมูลตาม fields ต่อไปนี้:
 - projectName: ชื่อโครงการ
 - objective: วัตถุประสงค์
+- background: ความเป็นมา
 - scope: ขอบเขตงาน
-- budget: งบประมาณ
+- budget: งบประมาณ(บาท)
 - duration: ระยะเวลา
+- penaltyRate: อัตราค่าปรับ
 - qualifications: คุณสมบัติผู้เสนอราคา
 - conditions: เงื่อนไข/ข้อกำหนดอื่นๆ
 
@@ -76,11 +78,12 @@ export async function extractTorFields(
 
 ตอบเป็น JSON เท่านั้น ในรูปแบบ:
 {
-  "fields": { "projectName": "...", "objective": "...", "scope": "...", "budget": "...", "duration": "...", "qualifications": "...", "conditions": "..." },
+  "fields": { "projectName": "...", "objective": "...", "background": "...", "scope": "...", "budget": "...", "duration": "...", "penaltyRate": "...", "qualifications": "...", "conditions": "..." },
   "confidence": 0.85
 }
 
-ถ้าไม่พบข้อมูล field ใด ให้ใส่ string ว่าง
+ถ้าพบข้อมูล butget ในเอกสาร ให้เพิ่มวงเล็บด้านหลังเป็นคำไทยเช่น 1,000,000 ให้แปลงเป็น ๑,๐๐๐,๐๐๐ และใส่คำว่า (หนึ่งล้านบาท) ตามหลังด้วย เช่น "budget": "งบประมาณประมาณ 1 ล้านบาท (หนึ่งล้านบาท)"
+ถ้าไม่พบข้อมูล field ใด ให้ใส่ ข้อมูลตัวอย่างมาคือช่วยแนะนำมาเลยว่า ใส่ข้อมูลอะไรใน field นั้นแทน (เช่น "budget": "งบประมาณประมาณ ๑,๐๐๐,๐๐๐ บาท (หนึ่งล้านบาท)(ตัวอย่าง)","penaltyRate": "๐.๒๐ ของราคาค่าสิ่งของที่ยังไม่ได้รับมอบต่อวัน (ตัวอย่าง)") และให้เปลี่ยนตัวเลขทั้งหมดเป็นเลขไทย"
 confidence คืออัตราส่วนความมั่นใจ (0-1) ว่าดึงข้อมูลถูกต้อง
 
 === เนื้อหา PDF ===

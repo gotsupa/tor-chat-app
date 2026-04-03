@@ -28,19 +28,21 @@ const COMMON_FIELDS = [
   { key: 'background' as const, label: 'ความเป็นมา', type: 'textarea' },
   { key: 'objective' as const, label: 'วัตถุประสงค์', type: 'textarea' },
   { key: 'scope' as const, label: 'ขอบเขตงาน', type: 'textarea' },
-  {
-    inputType: 'number',
-    key: 'budget' as const,
-    label: 'งบประมาณ (บาท)',
-    type: 'input',
-  },
+  { key: 'budget' as const, label: 'งบประมาณ (บาท)', type: 'textarea' },
+  // {
+  //   inputType: 'number',
+  //   key: 'budget' as const,
+  //   label: 'งบประมาณ (บาท)',
+  //   type: 'input',
+  // },
   { key: 'duration' as const, label: 'ระยะเวลาดำเนินการ', type: 'input' },
-  {
-    key: 'qualifications' as const,
-    label: 'คุณสมบัติผู้เสนอราคา',
-    type: 'textarea',
-  },
-  { key: 'conditions' as const, label: 'เงื่อนไขอื่น ๆ', type: 'textarea' },
+  { key: 'penaltyRate' as const, label: 'อัตราค่าปรับ', type: 'textarea' }
+  // {
+  //   key: 'qualifications' as const,
+  //   label: 'คุณสมบัติผู้เสนอราคา',
+  //   type: 'textarea',
+  // },
+  // { key: 'conditions' as const, label: 'เงื่อนไขอื่น ๆ', type: 'textarea' },
 ]
 
 // Extra fields specific to equipment_procurement
@@ -110,15 +112,15 @@ export function TorForm({ confidence, torType }: TorFormProps) {
 
   // Manage objectives as string[] via setValue
   const objectives = useWatch({ control, name: 'objectives' }) ?? []
-  const setObjectives = (next: string[]) => setValue('objectives', next)
-  const addObjective = () => setObjectives([...objectives, ''])
-  const removeObjective = (i: number) =>
-    setObjectives(objectives.filter((_, idx) => idx !== i))
-  const updateObjective = (i: number, val: string) => {
-    const next = [...objectives]
-    next[i] = val
-    setObjectives(next)
-  }
+  // const setObjectives = (next: string[]) => setValue('objectives', next)
+  // const addObjective = () => setObjectives([...objectives, ''])
+  // const removeObjective = (i: number) =>
+  //   setObjectives(objectives.filter((_, idx) => idx !== i))
+  // const updateObjective = (i: number, val: string) => {
+  //   const next = [...objectives]
+  //   next[i] = val
+  //   setObjectives(next)
+  // }
 
   console.log('background', useWatch({ control, name: 'background' }))
 

@@ -8,347 +8,158 @@ type Fields = Record<string, unknown>
 
 export async function createTorDocument(
   fields: Fields,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _torType?: string
 ): Promise<Buffer> {
   const g = (k: string) => get(fields, k)
-  const ga = (k: string) => getArray(fields, k)
 
-  const background = g('background')
-  const bondPercent = g('bondPercent')
-  const budget = g('budget')
-  const conditions = g('conditions')
-  const duration = g('duration')
-  const middlePrice = g('middlePrice')
-  const objectives = g('objectives')
-  const penaltyMin = g('penaltyMin')
-  const penaltyRate = g('penaltyRate')
+  // Extract fields
   const projectName = g('projectName')
-  const quantity = g('quantity')
-  const unit = g('unit')
+  const background = g('background')
+  const objective = g('objective')
+  const budget = g('budget')
+  const duration = g('duration')
   const warrantyYears = g('warrantyYears')
-
-  const projectLine =
-    [projectName, quantity, unit].filter(Boolean).join(' ') || ''
+  const penaltyRate = g('penaltyRate')
 
   const children: Paragraph[] = [
     // ── Main Title ──
     thPara(
       [
-        thText('ขอบเขตของงาน Terms of Reference : TOR  (จัดซื้อคอมพิวเตอร์)', {
-          bold: true,
-        }),
-      ],
-      { align: AlignmentType.CENTER }
-    ),
-
-    // ── Project line ──
-    thPara([thText('โครงการ'), thText(val(projectLine, 30), { bold: true })], {
-      align: AlignmentType.CENTER,
-    }),
-
-    // ── Separator ──
-    thPara(
-      [
         thText(
-          '-----------------------------------------------------------------------'
+          'ร่างรายละเอียดขอบเขตของงานทั้งโครงการ (Terms of Reference : TOR)',
+          { bold: true }
         ),
       ],
-      { align: AlignmentType.CENTER }
+      { align: AlignmentType.LEFT, spaceAfter: 80 }
     ),
 
-    spacer(80),
+    // ── Section 1: ข้อมูลเกี่ยวกับโครงการ ──
+    sectionHeading('๑', 'ข้อมูลเกี่ยวกับโครงการ'),
 
-    // ── 1. Background ──
-    sectionHeading('๑', 'ความเป็นมา'),
-    bodyPara([thText(val(background, 60))]),
-    spacer(80),
-
-    // ── 2. Objectives ──
-    sectionHeading('๒', 'วัตถุประสงค์'),
-    bodyPara([thText(val(objectives, 60))]),
-    // ...(objectives.length > 0
-    //   ? objectives.map((obj) => bodyPara([thText(val(obj, 50))]))
-    //   : [
-    //       bodyPara([
-    //         thText(
-    //           '...............................................................................'
-    //         ),
-    //       ]),
-    //     ]),
-    spacer(80),
-
-    // ── 3. Qualifications ──
-    sectionHeading('๓', 'คุณสมบัติของผู้เสนอราคา'),
-    ...createQualifications(fields),
-    spacer(80),
-
-    // ── 4. Specifications ──
-    sectionHeading('๔', 'คุณลักษณะเฉพาะ'),
+    // 1.1
     thPara(
       [
-        thText(
-          'กำหนดรายละเอียดคุณลักษณะของพัสดุที่ต้องการซื้อ เพื่อให้เป็นไปตามความต้องการใช้งานของผู้ซื้อ'
-        ),
+        thText('๑.๑ ชื่อโครงการ '),
+        thText(val(projectName, 30), { bold: false, color: '800080' }),
       ],
       { left: 720, spaceAfter: 80 }
     ),
-    subHeading('4.1', 'คุณสมบัติทั่วไป'),
-    subHeading('4.2', 'คุณสมบัติด้านเทคนิค'),
-    ...createSpecParagraphs(fields),
-    spacer(80),
 
-    // ── 5. General Conditions ──
-    sectionHeading('๕', 'ข้อกำหนดทั่วไป'),
-    thPara(
+    // 1.2
+    thPara([thText('๑.๒ ความเป็นมา ')], { left: 720, spaceAfter: 0 }),
+    bodyPara(
       [
-        thText(
-          '5.1  ผู้ขายจะต้องแจ้งกำหนดเวลาติดตั้งแล้วเสร็จพร้อมที่จะใช้งานและส่งมอบคอมพิวเตอร์ได้โดยทำเป็นหนังสือยื่นต่อผู้ซื้อ ณ '
-        ),
-        thText(val('', 15)),
-        thText('ในเวลาราชการก่อนวันกำหนดส่งมอบไม่น้อยกว่า'),
-        thText(val(duration, 5), { bold: true }),
-        thText('วันทำการ'),
+        thText(val(background, 30), {  bold: false, color: '800080'  }),
       ],
-      { left: 360, spaceAfter: 80 }
+      0
     ),
-    thPara(
-      [
-        thText(
-          '5.2  ผู้ขายต้องออกแบบสถานที่ติดตั้งคอมพิวเตอร์รวมทั้งระบบอื่น ๆ ที่เกี่ยวข้องตามมาตรฐานของผู้ขาย'
-        ),
-      ],
-      { left: 360, spaceAfter: 80 }
-    ),
-    thPara(
-      [
-        thText(
-          '5.3  ผู้ขายต้องนำเสนอแผนการฝึกอบรมในรายละเอียด เช่น หัวข้อการฝึกอบรม ระยะเวลา คุณสมบัติผู้เข้ารับการอบรม วิทยากร'
-        ),
-      ],
-      { left: 360, spaceAfter: 80 }
-    ),
-    thPara([thText('5.4  '), thText(val(conditions, 40))], {
-      left: 360,
-      spaceAfter: 80,
-    }),
-    spacer(80),
 
-    // ── 6. Duration ──
-    sectionHeading('๖', 'ระยะเวลาดำเนินการ'),
-    thPara(
+    // 1.3
+    thPara([thText('๑.๓ วัตถุประสงค์ ')], { left: 720, spaceAfter: 0 }),
+    bodyPara(
       [
-        thText(
-          '6.1  ผู้ขายจะต้องติดตั้งคอมพิวเตอร์ที่ขาย ให้ถูกต้องและครบถ้วนตาม ข้อกำหนด และพร้อมที่จะใช้งานได้ให้แก่สำนักงานภายใน'
-        ),
-        thText(val(duration, 10), { bold: true }),
-        thText('วันนับถัดจากวันลงนามในสัญญา'),
+        thText(val(objective, 30), {  bold: false, color: '800080'  }),
       ],
-      { left: 360, spaceAfter: 80 }
+      0
     ),
-    thPara(
-      [
-        thText(
-          '6.2  ผู้ขายจะต้องจัดฝึกอบรมให้แก่เจ้าหน้าที่ของสำนักงาน จำนวนไม่น้อยกว่า'
-        ),
-        thText(val('', 6), { bold: true }),
-        thText('คน จำนวนไม่น้อยกว่า'),
-        thText(val('', 6), { bold: true }),
-        thText('วัน ให้แล้วเสร็จภายใน'),
-        thText(val('', 10), { bold: true }),
-        thText('วันนับถัดจากวันลงนามในสัญญา'),
-      ],
-      { left: 360, spaceAfter: 80 }
-    ),
-    spacer(80),
 
-    // ── 7. Delivery Date ──
-    sectionHeading('๗', 'กำหนดส่งมอบ'),
-    bodyPara([
-      thText(
-        'ผู้ขายจะต้องส่งมอบพัสดุทั้งหมดพร้อมติดตั้งและฝึกอบรม (ถ้ามี) ภายในระยะเวลา'
-      ),
-      thText(val(duration, 10), { bold: true }),
-      thText('วันนับถัดจากวันลงนามในสัญญาซื้อขาย'),
-    ]),
-    spacer(80),
-
-    // ── 8. Delivery Location ──
-    sectionHeading('๘', 'สถานที่ส่งมอบ'),
-    bodyPara([thText(val('', 50))]),
-    spacer(80),
-
-    // ── 9. Budget ──
-    sectionHeading('๙', 'วงเงินในการจัดซื้อ'),
+    // 1.4
     thPara(
       [
-        thText('งบประมาณในการจัดซื้อ'),
-        thText(val(budget, 20), { bold: true }),
-        thText('จำนวนเงิน'),
-        thText(val(budget, 15), { bold: true }),
-        thText('บาท'),
-      ],
-      { left: 720, spaceAfter: 40 }
-    ),
-    thPara([thText('(' + val('', 30) + ')')], { left: 720, spaceAfter: 40 }),
-    thPara(
-      [
-        thText('ราคากลางในการจัดซื้อ'),
-        thText(val(middlePrice, 20), { bold: true }),
-        thText('จำนวนเงิน'),
-        thText(val(middlePrice, 15), { bold: true }),
-        thText('บาท'),
-      ],
-      { left: 720, spaceAfter: 40 }
-    ),
-    thPara([thText('(' + val('', 28) + ')รวมภาษีมูลค่าเพิ่ม')], {
-      left: 720,
-      spaceAfter: 80,
-    }),
-    spacer(80),
-
-    // ── 10. Warranty ──
-    sectionHeading('๑๐', 'การรับประกันความชำรุดบกพร่องของพัสดุที่ส่งมอบ'),
-    bodyPara([
-      thText(
-        '1. ผู้ขายต้องรับประกันความชำรุดบกพร่องของการติดตั้งและคอมพิวเตอร์ตามสัญญานี้เป็นเวลา'
-      ),
-      thText(val(warrantyYears, 5), { bold: true }),
-      thText('ปี'),
-      thText(val('', 5), { bold: true }),
-      thText(
-        'เดือน นับแต่วันที่ผู้ซื้อได้รับมอบ ถ้าภายในระยะเวลาดังกล่าวการติดตั้งหรือคอมพิวเตอร์ชำรุดบกพร่องหรือใช้งานไม่ได้ทั้งหมดหรืองแต่บางส่วน'
-      ),
-    ]),
-    bodyPara([
-      thText(
-        '2. ผู้ขายมีหน้าที่บำรุงรักษาและซ่อมแซมแก้ไขคอมพิวเตอร์ให้อยู่ในสภาพใช้งานได้ดีตลอดระยะเวลาที่รับประกัน ด้วยค่าใช้จ่ายของผู้ขาย'
-      ),
-    ]),
-    spacer(80),
-
-    // ── 11. Payment Terms ──
-    sectionHeading('๑๑', 'เงื่อนไขการชำระเงิน'),
-    thPara(
-      [
-        thText(
-          'สำนักงานจะ\t\tชำระเงิน ค่าสิ่งของให้แก่ผู้ขาย เมื่อ สำนักงานได้รับมอบสิ่งของโดยครบถ้วนแล้ว  (กรณีชำระครั้งเดียว)'
-        ),
-      ],
-      { left: 360, spaceAfter: 80 }
-    ),
-    thPara(
-      [thText('สำนักงานจะชำระเงินค่าสิ่งของ ให้แก่ผู้ขาย เป็นงวด ๆ ดังนี้')],
-      { left: 720, spaceAfter: 40 }
-    ),
-    thPara(
-      [
-        thText('งวดที่ 1 เป็นจำนวน  ร้อยละ'),
-        thText(val('', 8), { bold: true }),
-        thText('ของมูลค่าตามสัญญา เมื่อ\t\tผู้ขาย ได้ ส่งมอบพัสดุ'),
-        thText(val('', 10), { bold: true }),
-        thText('ภายใน '),
-        thText(val('', 10), { bold: true }),
-        thText('วัน และคณะกรรมการตรวจรับพัสดุ ได้ตรวจรับเรียบร้อยแล้ว'),
-      ],
-      { left: 720, spaceAfter: 40 }
-    ),
-    thPara(
-      [
-        thText('งวดที่ 2 เป็นจำนวน  ร้อยละ'),
-        thText(val('', 8), { bold: true }),
-        thText('ของมูลค่าตามสัญญา เมื่อ\t\tผู้ขาย ได้ ส่งมอบพัสดุ'),
-        thText(val('', 10), { bold: true }),
-        thText('ภายใน '),
-        thText(val('', 10), { bold: true }),
-        thText('วัน และคณะกรรมการตรวจรับพัสดุ ได้ตรวจรับเรียบร้อยแล้ว'),
+        thText('๑.๔ วงเงินงบประมาณ/วงเงินที่ได้รับจัดสรร '),
+        thText(val(budget, 30), {  bold: false, color: '800080'  }),
       ],
       { left: 720, spaceAfter: 80 }
     ),
+
     spacer(80),
 
-    // ── 12. Advance Payment ──
-    sectionHeading('๑๒', 'การจ่ายเงินล่วงหน้า (ถ้ามี)'),
-    bodyPara([
-      thText(
-        'สำนักงานจะ\t\tจ่ายเงิน สิ่งของล่วงหน้าให้แก่ ผู้ขาย จำนวน ร้อยละ...(ไม่เกิน...15)...........ของราคาค่าสิ่งของ ตามสัญญา'
-      ),
-    ]),
+    // ── Section 2: คุณสมบัติของผู้ยื่นข้อเสนอ ──
+    sectionHeading('๒', 'คุณสมบัติของผู้ยื่นข้อเสนอ'),
+
+    ...createQualifications(),
+
     spacer(80),
 
-    // ── 13. Penalty ──
-    sectionHeading('๑๓', 'ค่าปรับ'),
-    bodyPara([
-      thText(
-        'หากผู้ขายไม่สามารถส่งมอบสิ่งของภายในเวลาที่กำหนดไว้ในสัญญา ผู้ขายจะต้องชำระค่าปรับให้แก่ ผู้ซื้อเป็นรายวันอัตราร้อยละ '
-      ),
-      thText(val(penaltyRate, 6), { bold: true }),
-      thText(
-        ' (ศูนย์จุดสองศูนย์) ของมูลค่าค่าสิ่งของตามสัญญา แต่ไม่ต่ำกว่าวันละ '
-      ),
-      thText(val(penaltyMin, 6), { bold: true }),
-      thText(' บาท'),
-    ]),
+    // ── Section 3: รายละเอียดคุณลักษณะเฉพาะ ──
+    sectionHeading('๓', 'รายละเอียดคุณลักษณะเฉพาะของพัสดุที่จะดำเนินการจัดซื้อ และเอกสารแนบท้ายอื่น ๆ'),
+    thPara(
+      [thText('เอกสารแนบ ๑ TOR DP๘-๔๖๓๔-WGZ')],
+      { left: 720, spaceAfter: 80 }
+    ),
+
     spacer(80),
 
-    // ── 14. Performance Bond ──
-    sectionHeading(14, 'หลักประกันสัญญา'),
-    bodyPara([
-      thText('ผู้ขายจะต้องนำหลักประกันอัตรา\t\t'),
-      thText('ร้อยละ '),
-      thText(val(bondPercent, 5), { bold: true }),
-      thText(
-        ' ของราคาค่าสิ่งของตามสัญญา มามอบไว้แก่สำนักงาน เพื่อเป็นหลักประกันการปฏิบัติตามสัญญา'
-      ),
-    ]),
-    spacer(80),
-
-    // ── 15. Bid Submission ──
-    sectionHeading(15, 'การยื่นข้อเสนอ'),
-    bodyPara([thText('ผู้เสนอราคาจะต้องยื่นข้อเสนอดังนี้')]),
-    spacer(80),
-
-    // ── 16. Evaluation Criteria ──
-    sectionHeading(16, 'หลักเกณฑ์และสิทธิในการพิจารณาข้อเสนอ'),
-    bodyPara([
-      thText(
-        'ในการพิจารณาผลการยื่นข้อเสนอราคาอิเล็กทรอนิกส์ครั้งนี้ สำนักงานฯ จะพิจารณาตัดสิน'
-      ),
-    ]),
-    thPara([thText('โดยใช้เกณฑ์ราคา  (ใช้ราคาต่ำสุด)หรือ', { bold: true })], {
-      left: 720,
-      spaceBefore: 40,
-    }),
+    // ── Section 4: กำหนดเวลาส่งมอบพัสดุ ──
+    sectionHeading('๔', 'กำหนดเวลาส่งมอบพัสดุ'),
     thPara(
       [
-        thText(
-          'หลักเกณฑ์การประเมินค่าประสิทธิภาพต่อราคา  โดยพิจารณาให้คะแนนราคา ..........คะแนน และเกณฑ์คุณภาพ'
-        ),
-        thText(val('', 10)),
-        thText('คะแนน รวม 100 คะแนน ดังนี้'),
+        thText('ระยะเวลาส่งมอบ  '),
+        thText(val(duration, 30), {  bold: false, color: '800080'  }),
       ],
-      { left: 720, spaceAfter: 40 }
+      { left: 720, spaceAfter: 80 }
     ),
-    thPara([thText('ต้นทุนของพัสดุนั้นตลอดอายุการใช้สอย\t\tคะแนน')], {
-      left: 720,
-      spaceAfter: 20,
-    }),
-    thPara([thText('มาตรฐานของสินค้าหรือบริการ\t\tคะแนน')], {
-      left: 720,
-      spaceAfter: 20,
-    }),
-    thPara([thText('บริการหลังการขาย\t\tคะแนน')], {
-      left: 720,
-      spaceAfter: 20,
-    }),
-    thPara(
-      [thText('พัสดุที่รัฐต้องการส่งเสริมหรือสนับสนุน (ถ้ามี)\t\tคะแนน')],
-      { left: 720, spaceAfter: 20 }
+
+    spacer(80),
+
+    // ── Section 5: งวดงานและการจ่ายเงิน ──
+    sectionHeading('๕', 'งวดงานและการจ่ายเงิน'),
+    bodyPara(
+      [
+        thText(
+          'การไฟฟ้านครหลวง ฝ่ายวางแผนและบริหารทรัพย์สินดิจิทัล จะจ่ายค่าสิ่งของซึ่งได้รวมภาษีมูลค่าเพิ่ม ตลอดจนภาษีอากรอื่น ๆ และค่าใช้จ่ายทั้งปวงแล้วให้แก่ผู้ยื่นข้อเสนอที่ได้รับการคัดเลือกให้เป็นผู้ขาย เมื่อผู้ขายได้ส่งมอบสิ่งของได้ครบถ้วนตามสัญญาซื้อขายหรือข้อตกลงเป็นหนังสือ และการไฟฟ้านครหลวง ฝ่ายวางแผนและบริหารทรัพย์สินดิจิทัลได้ตรวจรับมอบสิ่งของไว้เรียบร้อยแล้ว'
+        ),
+      ],
+      0
     ),
-    thPara([thText('ข้อเสนอด้านเทคนิคหรือข้อเสนออื่น ๆ\t\tคะแนน')], {
-      left: 720,
-      spaceAfter: 80,
-    }),
+
+    spacer(80),
+
+    // ── Section 6: หลักเกณฑ์ในการพิจารณา ──
+    sectionHeading('๖', 'หลักเกณฑ์ในการพิจารณาคัดเลือกข้อเสนอ'),
+    bodyPara(
+      [
+        thText(
+          'ในการพิจารณาคัดเลือกผู้ชนะการยื่นข้อเสนอ การไฟฟ้านครหลวง ฝ่ายวางแผนและบริหารทรัพย์สินดิจิทัล จะพิจารณาตัดสินโดยใช้หลักเกณฑ์ราคา'
+        ),
+      ],
+      0
+    ),
+
+    spacer(80),
+
+    // ── Section 7: อัตราค่าปรับ ──
+    sectionHeading('๗', 'อัตราค่าปรับ'),
+    bodyPara(
+      [
+        thText('อัตราค่าปรับกำหนดให้คิดในอัตราร้อยละ '),
+        thText(val(penaltyRate, 30), {  bold: false, color: '800080' }),
+      ],
+      0
+    ),
+
+    spacer(80),
+
+    // ── Section 8: การรับประกัน ──
+    sectionHeading('๘', 'การกำหนดระยะเวลารับประกันความชำรุดบกพร่อง'),
+    bodyPara(
+      [
+        thText(
+          'ผู้ชนะการเสนอราคาจะต้องรับประกันความชำรุดบกพร่องของสิ่งของที่ซื้อเป็นเวลา '
+        ),
+        thText('๓', { bold: true }),
+        thText(
+          ' ปีนับถัดจากวันที่ผู้ซื้อ ได้รับมอบสิ่งของทั้งหมดไว้โดยถูกต้องครบถ้วนตามสัญญา โดยภายในกำหนดระยะเวลาดังกล่าวหากสิ่งของตามสัญญานี้เกิดชำรุดบกพร่องหรือขัดข้อง อันเนื่องมาจากการใช้งานตามปกติ ผู้ขายจะต้องจัดการซ่อมแซมหรือแก้ไขให้อยู่ในสภาพที่ใช้การได้ดีดังเดิมภายใน '
+        ),
+        thText('๒', { bold: true }),
+        thText(
+          ' วัน นับถัดจากวันที่ได้รับแจ้งจากผู้ซื้อ โดยไม่คิดค่าใช้จ่ายใดๆทั้งสิ้น'
+        ),
+      ],
+      0
+    ),
+
+    spacer(80),
   ]
 
   const doc = new Document({
@@ -359,9 +170,9 @@ export async function createTorDocument(
           page: {
             margin: {
               bottom: 1134, // ~2 cm
-              left: 1701, //  ~3 cm
+              left: 1701, // ~3 cm
               right: 1134, // ~2 cm
-              top: 1134, //  ~2 cm
+              top: 1134, // ~2 cm
             },
           },
         },
@@ -383,84 +194,136 @@ export async function createTorDocument(
   return Buffer.from(buffer)
 }
 
+// ─── Helper Functions ────────────────────────────────────────
+
 function bodyPara(runs: TextRun[], firstLine = 720): Paragraph {
   return thPara(runs, { firstLine, spaceAfter: 80 })
 }
 
-function createQualifications(fields: Fields): Paragraph[] {
-  const brands = get(fields, 'brands')
-  const minProjectValue = get(fields, 'minProjectValue')
+function createQualifications(): Paragraph[] {
+  const paragraphs: Paragraph[] = []
 
-  const items: Array<{ num: string; text: string }> = [
+  const items = [
+    { num: '๒.๑', text: 'มีความสามารถตามกฎหมาย' },
+    { num: '๒.๒', text: 'ไม่เป็นบุคคลล้มละลาย' },
+    { num: '๒.๓', text: 'ไม่อยู่ระหว่างเลิกกิจการ' },
     {
-      num: '3.1',
-      text: 'เป็นนิติบุคคลผู้มีอาชีพขายพัสดุที่จัดซื้อครั้งนี้',
+      num: '๒.๔',
+      text: 'ไม่เป็นบุคคลซึ่งอยู่ระหว่างถูกระงับการยื่นข้อเสนอหรือทำสัญญากับหน่วยงานของรัฐไว้ชั่วคราวตามที่ประกาศเผยแพร่ในระบบเครือข่ายสารสนเทศของกรมบัญชีกลาง',
     },
     {
-      num: '3.2',
-      text: 'ไม่เป็นผู้ที่ถูกระบุชื่อไว้ในบัญชีรายชื่อผู้ทิ้งงานของทางราชการ และได้แจ้งเวียนชื่อแล้วหรือไม่เป็นผู้ที่ได้รับผลของการสั่งให้นิติบุคคลหรือบุคคลอื่นเป็นผู้ทิ้งงานตามระเบียบของทางราชการ',
+      num: '๒.๕',
+      text: 'ไม่เป็นบุคคลซึ่งถูกระบุชื่อไว้ในบัญชีรายชื่อผู้ทิ้งงานและได้แจ้งเวียนชื่อให้เป็นผู้ทิ้งงานของหน่วยงานของรัฐในระบบเครือข่ายสารสนเทศของกรมบัญชีกลาง ซึ่งรวมถึงนิติบุคคลที่ผู้ทิ้งงานเป็นหุ้นส่วนผู้จัดการ กรรมการผู้จัดการ ผู้บริหาร ผู้มีอำนาจในการดำเนินงานในกิจการของนิติบุคคลนั้นด้วย',
     },
     {
-      num: '3.3',
-      text: 'ไม่เป็นผู้ได้รับเอกสิทธิ์หรือความคุ้มกัน ซึ่งอาจปฏิเสธไม่ยอมขึ้นศาลไทย เว้นแต่รัฐบาลของผู้เสนอราคา ได้มีคำสั่งให้สละสิทธิ์ความคุ้มกันเช่นว่านั้น',
+      num: '๒.๖',
+      text: 'มีคุณสมบัติและไม่มีลักษณะต้องห้ามตามที่คณะกรรมการนโยบายการจัดซื้อจัดจ้างและการบริหารพัสดุภาครัฐกำหนดในราชกิจจานุเบกษา',
     },
     {
-      num: '3.4',
-      text: 'ไม่เป็นผู้มีผลประโยชน์ร่วมกันกับผู้เสนอราคารายอื่นที่เข้าเสนอราคาให้แก่สำนักงานพัฒนาเทคโนโลยีอวกาศและภูมิสารสนเทศ (องค์การมหาชน)',
+      num: '๒.๗',
+      text: 'เป็นบุคคลธรรมดาหรือนิติบุคคล ผู้มีอาชีพขายพัสดุที่ประกวดราคาอิเล็กทรอนิกส์ดังกล่าว',
     },
     {
-      num: '3.8',
-      text: `ผู้เสนอราคาต้องเป็นผู้ผลิต หรือผู้แทนจำหน่ายที่เสนอ จากบริษัทผู้ผลิต${val(brands, 20)}โดยตรง/ผู้แทนจำหน่าย`,
+      num: '๒.๘',
+      text: 'ไม่เป็นผู้มีผลประโยชน์ร่วมกันกับผู้ยื่นข้อเสนอรายอื่นที่เข้ายื่นข้อเสนอให้แก่ การไฟฟ้านครหลวง ฝ่ายวางแผนและบริหารทรัพย์สินดิจิทัล ณ วันประกาศประกวดราคาอิเล็กทรอนิกส์หรือไม่เป็นผู้กระทำการอันเป็นการขัดขวางการแข่งขันราคาอย่างเป็นธรรม ในการเสนอราคาครั้งนี้',
     },
     {
-      num: '3.9',
-      text: `ผู้เสนอราคาต้องมีผลงาน การจำนวนพัสดุประเภทเดียวกันกับที่จัดซื้อ ในวงเงินไม่น้อยกว่า ${val(minProjectValue, 10)} (ไม่เกิน 50% ของงบประมาณการจัดซื้อ)`,
+      num: '๒.๙',
+      text: 'ไม่เป็นผู้ได้รับเอกสิทธิ์หรือความคุ้มกัน ซึ่งอาจปฏิเสธไม่ยอมขึ้นศาลไทย เว้นแต่รัฐบาลของผู้ยื่นข้อเสนอได้มีคำสั่งสละเอกสิทธิ์และความคุ้มกันเช่นว่านั้น',
     },
   ]
 
-  return items.map((item) =>
-    thPara([thText(`${item.num}  `), thText(item.text)], {
-      left: 360,
-      spaceAfter: 80,
-    })
-  )
-}
+  // Add items 2.1-2.9
+  items.forEach((item) => {
+    paragraphs.push(
+      thPara([thText(`${item.num}  `), thText(item.text)], {
+        left: 720,
+        spaceAfter: 80,
+      })
+    )
+  })
 
-function createSpecParagraphs(fields: Fields): Paragraph[] {
-  const specs = [
-    { label: '• ประมวลผล (CPU)\t\t: ', value: get(fields, 'cpu') },
-    { label: '• หน่วยความจำ (RAM)\t: ', value: get(fields, 'ram') },
-    { label: '• พื้นที่จัดเก็บ (Storage)\t: ', value: get(fields, 'storage') },
-    { label: '• ระบบปฏิบัติการ (OS)\t: ', value: get(fields, 'os') },
-    { label: '• มอนิเตอร์\t\t\t: ', value: get(fields, 'monitor') },
-    {
-      label: '• การรับประกัน\t\t: ',
-      value: get(fields, 'warrantyYears')
-        ? get(fields, 'warrantyYears') + ' ปี'
-        : '',
-    },
+  // Add 2.10 with sub-paragraphs
+  paragraphs.push(
+    thPara(
+      [
+        thText('๒.๑๐  '),
+        thText(
+          'ผู้ยื่นข้อเสนอที่ยื่นข้อเสนอในรูปแบบของ "กิจการร่วมค้า" ต้องมีคุณสมบัติดังนี้'
+        ),
+      ],
+      { left: 720, spaceAfter: 40 }
+    )
+  )
+
+  paragraphs.push(
+    thPara(
+      [
+        thText(
+          'กิจการร่วมค้าที่ยื่นข้อเสนอ ผู้เข้าร่วมค้าทุกรายจะต้องมีคุณสมบัติครบถ้วนตามเงื่อนไขที่กำหนดไว้ในเอกสารเชิญชวน เว้นแต่ในกรณีกิจการร่วมค้าที่มีข้อตกลงระหว่างผู้เข้าร่วมค้ากำหนดให้ผู้เข้าร่วมค้ารายใดรายหนึ่งเป็นผู้เข้าร่วมค้าหลัก กิจการร่วมค้านั้นสามารถใช้ผลงานของผู้เข้าร่วมค้าหลักรายเดียวเป็นก่อสร้างของกิจการร่วมค้าที่ยื่นข้อเสนอ'
+        ),
+      ],
+      { left: 1080, spaceAfter: 80 }
+    )
+  )
+
+  paragraphs.push(
+    thPara(
+      [
+        thText(
+          'กรณีมีข้อตกลงระหว่างผู้เข้าร่วมค้ากำหนดให้ผู้เข้าร่วมค้ารายใดรายหนึ่งเป็นผู้เข้าร่วมค้าหลัก ข้อตกลงดังกล่าวจะต้องมีการกำหนดสัดส่วนหน้าที่ และความรับผิดชอบในปริมาณงาน สิ่งของ หรือมูลค่าตามสัญญา มากกว่าผู้เข้าร่วมค้ารายอื่นทุกราย'
+        ),
+      ],
+      { left: 1080, spaceAfter: 80 }
+    )
+  )
+
+  paragraphs.push(
+    thPara(
+      [thText('๒.๑๑  '), thText('ผู้ยื่นข้อเสนอต้องลงทะเบียนที่มีข้อมูลถูกต้องครบถ้วนในระบบจัดซื้อจัดจ้างภาครัฐด้วยอิเล็กทรอนิกส์ (Electronic Government Procurement : e-GP) ของกรมบัญชีกลาง')],
+      { left: 720, spaceAfter: 80 }
+    )
+  )
+
+  paragraphs.push(
+    thPara(
+      [thText('๒.๑๒  '), thText('ผู้ยื่นข้อเสนอต้องมีมูลค่าสุทธิของกิจการ ดังนี้')],
+      { left: 720, spaceAfter: 40 }
+    )
+  )
+
+  // Add 2.12 sub-items
+  const subItems = [
+    '(๑) กรณีผู้ยื่นข้อเสนอเป็นนิติบุคคลที่จัดตั้งขึ้นตามกฎหมายไทยซึ่งได้จดทะเบียนเกินกว่า ๑ ปี ต้องมีมูลค่าสุทธิของกิจการ จากผลต่างระหว่างสินทรัพย์สุทธิหักด้วยหนี้สินสุทธิ ที่ปรากฏในงบแสดงฐานะการเงินที่มีการตรวจรับรองแล้ว ซึ่งจะต้องแสดงค่าเป็นบวกติดต่อกันเป็นระยะเวลา ๑ ปีสุดท้ายก่อนวันยื่นข้อเสนอ',
+    '(๒) กรณีผู้ยื่นข้อเสนอเป็นนิติบุคคลที่จัดตั้งขึ้นตามกฎหมายไทย ซึ่งยังไม่มีการรายงานงบแสดงฐานะการเงินกับกรมพัฒนาธุรกิจการค้า ให้พิจารณาการกำหนดมูลค่าของทุนจดทะเบียน โดยผู้ยื่นข้อเสนอจะต้องมีทุนจดทะเบียนที่เรียกชำระมูลค่าหุ้นแล้ว ณ วันที่ยื่นข้อเสนอ ไม่ต่ำกว่า ๒ ล้านบาท',
+    '(๓) กรณีผู้ยื่นข้อเสนอเป็นบุคคลธรรมดา ต้องมีมูลค่าสุทธิของกิจการ โดยพิจารณาจากบัญชีเงินฝากธนาคาร ณ วันยื่นข้อเสนอ โดยต้องมีเงินฝากเป็นบวกในมูลค่า ๑ ใน ๔ ของมูลค่างบประมาณที่ยื่นข้อเสนอในครั้งนั้น และหากเป็นผู้ชนะการจัดซื้อจัดจ้างหรือเป็นผู้ได้รับการคัดเลือกจะต้องแสดงบัญชีเงินฝากที่มีมูลค่าดังกล่าวอีกครั้งหนึ่งในวันลงนามในสัญญา',
+    '(๔) กรณีที่ผู้ยื่นข้อเสนอไม่มีมูลค่าสุทธิของกิจการและทุนจดทะเบียน หรือมีแต่ไม่เพียงพอที่จะเข้ายื่นข้อเสนอ ผู้ยื่นข้อเสนอสามารถขอวงเงินสินเชื่อเพื่อมาสนับสนุนให้มูลค่าสุทธิ ของกิจการ (Net Worth) ไม่ติดลบ หรือให้มีสภาพคล่องที่ดีจนเพียงพอต่อการยื่นข้อเสนอ โดยต้องมีวงเงินสินเชื่อ ๑ ใน ๔ ของมูลค่างบประมาณที่ยื่นข้อเสนอในครั้งนั้น (สินเชื่อที่ธนาคารภายในประเทศ หรือบริษัทเงินทุนหรือบริษัทเงินทุนหลักทรัพย์ที่ได้รับอนุญาตให้ประกอบกิจการเงินทุนเพื่อการพาณิชย์ และประกอบธุรกิจ ค้าประกัน ตามประกาศของธนาคารแห่งประเทศไทย ตามรายชื่อบริษัทเงินทุนที่ธนาคารแห่งประเทศไทย แจ้งเวียนให้ทราบ โดยพิจารณาจากยอดเงินรวมของวงเงินสินเชื่อที่สำนักงานใหญ่รับรอง หรือที่สำนักงานสาขารับรอง (กรณีได้รับมอบอำนาจจากสำนักงานใหญ่) ซึ่งออกให้แก่ผู้ยื่นข้อเสนอ นับถึงวันยื่นข้อเสนอไม่เกิน ๙๐ วัน)',
+    '(๕) กรณีตาม (๑) - (๔) ยกเว้นสำหรับกรณีดังต่อไปนี้',
+    '(๕.๑) กรณีที่ผู้ยื่นข้อเสนอเป็นหน่วยงานของรัฐ',
+    '(๕.๒) นิติบุคคลที่จัดตั้งขึ้นตามกฎหมายไทยที่อยู่ระหว่างการฟื้นฟูกิจการ ตามพระราชบัญญัติล้มละลาย (ฉบับที่ ๑๐) พ.ศ. ๒๕๖๑',
   ]
 
-  return specs.map(({ label, value }) =>
-    thPara([thText(label), thText(val(value, 25), { bold: !!value })], {
-      left: 720,
-      spaceAfter: 60,
-    })
-  )
+  subItems.forEach((item) => {
+    paragraphs.push(
+      thPara([thText(item)], {
+        left: 1080,
+        spaceAfter: 80,
+      })
+    )
+  })
+
+  return paragraphs
 }
 
 function get(fields: Fields, key: string): string {
   return (fields[key] as string | undefined) ?? ''
 }
 
-function getArray(fields: Fields, key: string): string[] {
-  return (fields[key] as string[] | undefined) ?? []
-}
-
 function sectionHeading(num: number | string, title: string): Paragraph {
   return thPara([thText(`${num}.  ${title}`, { bold: true })], {
     spaceAfter: 80,
-    spaceBefore: 200,
+    spaceBefore: 80,
+    left: 720,
   })
 }
 
@@ -468,15 +331,7 @@ function spacer(after = 160): Paragraph {
   return new Paragraph({ spacing: { after } })
 }
 
-function subHeading(num: string, title: string): Paragraph {
-  return thPara([thText(`${num}  ${title}`, { bold: true })], {
-    left: 360,
-    spaceAfter: 80,
-    spaceBefore: 80,
-  })
-}
-
-// ─── Section helpers ─────────────────────────────────────────
+// ─── Formatting Helpers ──────────────────────────────────────
 
 function thPara(
   runs: TextRun[],
@@ -489,7 +344,7 @@ function thPara(
   }
 ): Paragraph {
   return new Paragraph({
-    alignment: opts?.align ?? AlignmentType.JUSTIFIED,
+    alignment: opts?.align ?? AlignmentType.LEFT,
     children: runs,
     indent:
       opts?.firstLine !== undefined || opts?.left !== undefined
@@ -515,7 +370,7 @@ function thText(
   })
 }
 
-// ─── Main document builder ───────────────────────────────────
+// ─── Utility Functions ───────────────────────────────────────
 
 /** Return value string, or dotted placeholder when empty */
 function val(v: unknown, dots = 20): string {
