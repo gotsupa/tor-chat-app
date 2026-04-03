@@ -20,7 +20,7 @@ export async function createTorDocument(
   const conditions = g('conditions')
   const duration = g('duration')
   const middlePrice = g('middlePrice')
-  const objectives = ga('objectives')
+  const objectives = g('objectives')
   const penaltyMin = g('penaltyMin')
   const penaltyRate = g('penaltyRate')
   const projectName = g('projectName')
@@ -60,30 +60,31 @@ export async function createTorDocument(
     spacer(80),
 
     // ── 1. Background ──
-    sectionHeading(1, 'ความเป็นมา'),
+    sectionHeading('๑', 'ความเป็นมา'),
     bodyPara([thText(val(background, 60))]),
     spacer(80),
 
     // ── 2. Objectives ──
-    sectionHeading(2, 'วัตถุประสงค์'),
-    ...(objectives.length > 0
-      ? objectives.map((obj) => bodyPara([thText(val(obj, 50))]))
-      : [
-          bodyPara([
-            thText(
-              '...............................................................................'
-            ),
-          ]),
-        ]),
+    sectionHeading('๒', 'วัตถุประสงค์'),
+    bodyPara([thText(val(objectives, 60))]),
+    // ...(objectives.length > 0
+    //   ? objectives.map((obj) => bodyPara([thText(val(obj, 50))]))
+    //   : [
+    //       bodyPara([
+    //         thText(
+    //           '...............................................................................'
+    //         ),
+    //       ]),
+    //     ]),
     spacer(80),
 
     // ── 3. Qualifications ──
-    sectionHeading(3, 'คุณสมบัติของผู้เสนอราคา'),
+    sectionHeading('๓', 'คุณสมบัติของผู้เสนอราคา'),
     ...createQualifications(fields),
     spacer(80),
 
     // ── 4. Specifications ──
-    sectionHeading(4, 'คุณลักษณะเฉพาะ'),
+    sectionHeading('๔', 'คุณลักษณะเฉพาะ'),
     thPara(
       [
         thText(
@@ -98,7 +99,7 @@ export async function createTorDocument(
     spacer(80),
 
     // ── 5. General Conditions ──
-    sectionHeading(5, 'ข้อกำหนดทั่วไป'),
+    sectionHeading('๕', 'ข้อกำหนดทั่วไป'),
     thPara(
       [
         thText(
@@ -134,7 +135,7 @@ export async function createTorDocument(
     spacer(80),
 
     // ── 6. Duration ──
-    sectionHeading(6, 'ระยะเวลาดำเนินการ'),
+    sectionHeading('๖', 'ระยะเวลาดำเนินการ'),
     thPara(
       [
         thText(
@@ -162,7 +163,7 @@ export async function createTorDocument(
     spacer(80),
 
     // ── 7. Delivery Date ──
-    sectionHeading(7, 'กำหนดส่งมอบ'),
+    sectionHeading('๗', 'กำหนดส่งมอบ'),
     bodyPara([
       thText(
         'ผู้ขายจะต้องส่งมอบพัสดุทั้งหมดพร้อมติดตั้งและฝึกอบรม (ถ้ามี) ภายในระยะเวลา'
@@ -173,12 +174,12 @@ export async function createTorDocument(
     spacer(80),
 
     // ── 8. Delivery Location ──
-    sectionHeading(8, 'สถานที่ส่งมอบ'),
+    sectionHeading('๘', 'สถานที่ส่งมอบ'),
     bodyPara([thText(val('', 50))]),
     spacer(80),
 
     // ── 9. Budget ──
-    sectionHeading(9, 'วงเงินในการจัดซื้อ'),
+    sectionHeading('๙', 'วงเงินในการจัดซื้อ'),
     thPara(
       [
         thText('งบประมาณในการจัดซื้อ'),
@@ -207,7 +208,7 @@ export async function createTorDocument(
     spacer(80),
 
     // ── 10. Warranty ──
-    sectionHeading(10, 'การรับประกันความชำรุดบกพร่องของพัสดุที่ส่งมอบ'),
+    sectionHeading('๑๐', 'การรับประกันความชำรุดบกพร่องของพัสดุที่ส่งมอบ'),
     bodyPara([
       thText(
         '1. ผู้ขายต้องรับประกันความชำรุดบกพร่องของการติดตั้งและคอมพิวเตอร์ตามสัญญานี้เป็นเวลา'
@@ -227,7 +228,7 @@ export async function createTorDocument(
     spacer(80),
 
     // ── 11. Payment Terms ──
-    sectionHeading(11, 'เงื่อนไขการชำระเงิน'),
+    sectionHeading('๑๑', 'เงื่อนไขการชำระเงิน'),
     thPara(
       [
         thText(
@@ -267,7 +268,7 @@ export async function createTorDocument(
     spacer(80),
 
     // ── 12. Advance Payment ──
-    sectionHeading(12, 'การจ่ายเงินล่วงหน้า (ถ้ามี)'),
+    sectionHeading('๑๒', 'การจ่ายเงินล่วงหน้า (ถ้ามี)'),
     bodyPara([
       thText(
         'สำนักงานจะ\t\tจ่ายเงิน สิ่งของล่วงหน้าให้แก่ ผู้ขาย จำนวน ร้อยละ...(ไม่เกิน...15)...........ของราคาค่าสิ่งของ ตามสัญญา'
@@ -276,7 +277,7 @@ export async function createTorDocument(
     spacer(80),
 
     // ── 13. Penalty ──
-    sectionHeading(13, 'ค่าปรับ'),
+    sectionHeading('๑๓', 'ค่าปรับ'),
     bodyPara([
       thText(
         'หากผู้ขายไม่สามารถส่งมอบสิ่งของภายในเวลาที่กำหนดไว้ในสัญญา ผู้ขายจะต้องชำระค่าปรับให้แก่ ผู้ซื้อเป็นรายวันอัตราร้อยละ '
@@ -517,6 +518,7 @@ function thText(
 // ─── Main document builder ───────────────────────────────────
 
 /** Return value string, or dotted placeholder when empty */
-function val(v: string, dots = 20): string {
-  return v.trim() !== '' ? v : '.'.repeat(dots)
+function val(v: unknown, dots = 20): string {
+  const str = typeof v === 'string' ? v.trim() : String(v ?? '').trim()
+  return str !== '' ? str : '.'.repeat(dots)
 }

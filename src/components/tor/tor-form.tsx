@@ -25,6 +25,7 @@ const COMMON_FIELDS = [
     required: true,
     type: 'input',
   },
+  { key: 'background' as const, label: 'ความเป็นมา', type: 'textarea' },
   { key: 'objective' as const, label: 'วัตถุประสงค์', type: 'textarea' },
   { key: 'scope' as const, label: 'ขอบเขตงาน', type: 'textarea' },
   {
@@ -52,6 +53,7 @@ const EQUIPMENT_FIELDS = [
   },
   { key: 'unit' as const, label: 'หน่วย', type: 'input' },
   { key: 'background' as const, label: 'ความเป็นมา', type: 'textarea' },
+  { key: 'objectives' as const, label: 'วัตถุประสงค์', type: 'textarea' },
   { key: 'brands' as const, label: 'ยี่ห้อ / ผู้ผลิตที่กำหนด', type: 'input' },
   {
     inputType: 'number',
@@ -117,6 +119,8 @@ export function TorForm({ confidence, torType }: TorFormProps) {
     next[i] = val
     setObjectives(next)
   }
+
+  console.log('background', useWatch({ control, name: 'background' }))
 
   return (
     <div className="space-y-6">
@@ -197,7 +201,7 @@ export function TorForm({ confidence, torType }: TorFormProps) {
       </div>
 
       {/* Equipment Procurement Fields */}
-      {isEquipment && (
+      {/* {isEquipment && (
         <div className="space-y-4 rounded-xl border border-border/50 bg-card/50 p-4">
           <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             รายละเอียดครุภัณฑ์
@@ -233,7 +237,6 @@ export function TorForm({ confidence, torType }: TorFormProps) {
             />
           ))}
 
-          {/* Objectives — dynamic list */}
           <div className="space-y-2">
             <Label>วัตถุประสงค์ (รายการ)</Label>
             <div className="space-y-2">
@@ -272,7 +275,7 @@ export function TorForm({ confidence, torType }: TorFormProps) {
             </Button>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   )
 }
